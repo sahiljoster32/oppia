@@ -386,7 +386,7 @@ class DocstringParameterChecker(checkers.BaseChecker):
             'all raised exception types.'),
         'W9008': (
             'Redundant returns documentation',
-            'redundant-returns-doc',
+            'redundant-returns-docs',
             'Please remove the return/rtype '
             'documentation from this method.'),
         'W9010': (
@@ -527,24 +527,26 @@ class DocstringParameterChecker(checkers.BaseChecker):
             'Please enter a single newline above yield in doc string.'
         ),
         'W9035': (
-            'Arguments should be in following form: variable_name: typeinfo. '
+            'Arguments should be in the following form: variable_name- '
             'Description.',
             'malformed-args-section',
             'The parameter is incorrectly formatted.'
         ),
         'W9036': (
-            'Returns should be in the following form: typeinfo. Description.',
+            'Returns should be in the following form: Description. '
+            'It should not contain any typeinfo.',
             'malformed-returns-section',
             'The parameter is incorrectly formatted.'
         ),
         'W9037': (
-            'Yields should be in the following form: typeinfo. Description.',
+            'Yields should be in the following form: Description. '
+            'It should not contain any typeinfo.',
             'malformed-yields-section',
             'The parameter is incorrectly formatted.'
         ),
         'W9038': (
             'Arguments starting with *args should be formatted in the following'
-            ' form: *args: list(*). Description.',
+            ' form: *args- Description.',
             'malformed-args-argument',
             'The parameter is incorrectly formatted.'
         )
@@ -655,24 +657,15 @@ class DocstringParameterChecker(checkers.BaseChecker):
         # _check_docs_utils.py#L428.
         re_param_line = re.compile(
             r"""
-            \s*  \*{{0,2}}(\w+)          # identifier potentially with asterisks
-            \s*  ( [:]
-                \s*
-                ({type}|\S*|[\s\S]*)
-                (?:,\s+optional)?
-                [.]+\s )+ \s*
+            \s*  \*{0,2}(\w+)          # identifier potentially with asterisks
+            \s*  ([-])                   # seperator for indentifier and description.
             \s*  [A-Z0-9](.*)[.\]}}\)]+$     # beginning of optional description
-        """.format(
-            type=_check_docs_utils.GoogleDocstring.re_multiple_type,
-        ), flags=re.X | re.S | re.M)
+        """, flags=re.X | re.S | re.M)
 
         re_returns_line = re.compile(
             r"""
-            \s* (({type}|\S*|[\s\S]*).[.]+\s)+        # identifier
             \s* [A-Z0-9](.*)[.\]}}\)]+$               # beginning of description
-        """.format(
-            type=_check_docs_utils.GoogleDocstring.re_multiple_type,
-        ), flags=re.X | re.S | re.M)
+        """, flags=re.X | re.S | re.M)
 
         re_yields_line = re_returns_line
 
@@ -692,8 +685,8 @@ class DocstringParameterChecker(checkers.BaseChecker):
             entries = node_doc._parse_section(  # pylint: disable=protected-access
                 _check_docs_utils.GoogleDocstring.re_param_section)
             for entry in entries:
-                if entry.lstrip().startswith('*args') and not (
-                        entry.lstrip().startswith('*args: list(*)')):
+                if entry.lstrip().startswith('*args: list(*)') and not (
+                        entry.lstrip().startswith('*args-')):
                     self.add_message('malformed-args-argument', node=node)
                 match = re_param_line.match(entry)
                 if not match:
@@ -779,8 +772,8 @@ class DocstringParameterChecker(checkers.BaseChecker):
     def check_docstring_style(self, node):
         """It fetches a function node and extract the class node from function
         node if it is inside a class body and passes it to
-        check_docstring_structure which checks whether the docstring has a
-        space at the beginning and a period at the end.
+        check_docstring_structure which checks whether the docstring do not 
+        have space at the beginning and have a period at the end.
 
         Args:
             node: astroid.scoped_nodes.Function. Node for a function or
@@ -870,7 +863,7 @@ class DocstringParameterChecker(checkers.BaseChecker):
         arguments_node = node.args
         expected_argument_names = set(
             None if (arg.name in self.not_needed_param_in_docstring)
-            else (arg.name + ':') for arg in arguments_node.args)
+            else (arg.name + '-') for arg in arguments_node.args)
         currently_in_args_section = False
         # When we are in the args section and a line ends in a colon,
         # we can ignore the indentation styling in the next section of
@@ -888,7 +881,7 @@ class DocstringParameterChecker(checkers.BaseChecker):
                 current_line_indentation = (
                     len(line) - len(stripped_line))
                 parameter = re.search(
-                    '^[^:]+:',
+                    '^[^-]+-',
                     stripped_line)
                 # Check for empty lines and ignore them.
                 if len(line.strip()) == 0:
@@ -950,9 +943,9 @@ class DocstringParameterChecker(checkers.BaseChecker):
                        self.DOCSTRING_SECTION_RETURNS)
                       or (current_docstring_section ==
                           self.DOCSTRING_SECTION_YIELDS)):
-                    # Check for the start of a new parameter definition in the
-                    # format "type (elaboration)." and check the indentation.
-                    if (re.search(r'^[a-zA-Z_() -:,\*]+\.',
+                    # In the returns section, if we see this regex expression, we
+                    # can assume it's the start of a new parameter definition.
+                    if (re.search(r'^[A-Z0-9](.*)',
                                   stripped_line) and not in_description):
                         if current_line_indentation != (
                                 args_indentation_in_spaces + 4):
@@ -998,7 +991,7 @@ class DocstringParameterChecker(checkers.BaseChecker):
                       parameter and ((
                           parameter.group(0).strip('*')
                           in expected_argument_names) or
-                           re.search(r'\*[^ ]+: ', stripped_line))):
+                           re.search(r'\*[^ ]+- ', stripped_line))):
                     words_in_line = stripped_line.split(' ')
                     currently_in_freeform_section = False
                     # Check if the current parameter section indentation is
@@ -1058,7 +1051,7 @@ class DocstringParameterChecker(checkers.BaseChecker):
                     docstrings_checker.returns_something(
                         ret_node) for ret_node in return_nodes)):
             self.add_message(
-                'redundant-returns-doc',
+                'redundant-returns-docs',
                 node=node)
 
     def check_functiondef_yields(self, node, node_doc):
@@ -1116,7 +1109,7 @@ class DocstringParameterChecker(checkers.BaseChecker):
 
     def visit_return(self, node):
         """Visits a function node that contains a return statement and verifies
-        that the return value and the return type are documented.
+        that the return value is documented.
 
         Args:
             node: astroid.scoped_nodes.Function. Node for a function or
@@ -1140,16 +1133,9 @@ class DocstringParameterChecker(checkers.BaseChecker):
                 node=func_node
             )
 
-        if not (doc.has_rtype() or
-                (doc.has_property_type() and is_property)):
-            self.add_message(
-                'missing-return-type-doc',
-                node=func_node
-            )
-
     def visit_yield(self, node):
         """Visits a function node that contains a yield statement and verifies
-        that the yield value and the yield type are documented.
+        that the yield value is documented.
 
         Args:
             node: astroid.scoped_nodes.Function. Node for a function or
@@ -1170,12 +1156,6 @@ class DocstringParameterChecker(checkers.BaseChecker):
                 node=func_node
             )
 
-        if not doc_has_yields_type:
-            self.add_message(
-                'missing-yield-type-doc',
-                node=func_node
-            )
-
     def visit_yieldfrom(self, node):
         """Visits a function node that contains a yield from statement and
         verifies that the yield from value and the yield from type are
@@ -1193,7 +1173,7 @@ class DocstringParameterChecker(checkers.BaseChecker):
         documentation (e.g. the Sphinx tags 'param' and 'type') on the other
         hand are consistent with each other.
 
-        * Undocumented parameters except 'self' are noticed.
+        * Undocumented parameters except 'self' and 'cls' are noticed.
         * Undocumented parameter types except for 'self' and the ``*<args>``
           and ``**<kwargs>`` parameters are noticed.
         * Parameters mentioned in the parameter documentation that don't or no
@@ -1216,10 +1196,22 @@ class DocstringParameterChecker(checkers.BaseChecker):
                 no parameters to be documented. If None then
                 this value is read from the configuration.
         """
-        # Tolerate missing param or type declarations if there is a link to
-        # another method carrying the same name.
+        # Tolerate missing param if there is a link to another method carrying
+        # the same name.
         if not doc.doc:
             return
+
+        args_in_doc = []
+        if doc.has_params():
+            entries = doc._parse_section(  # pylint: disable=protected-access
+                _check_docs_utils.GoogleDocstring.re_param_section)
+            for entry in entries:
+                stripped_line = entry.lstrip()
+                parameter = re.search(
+                    '^[^-:]+',
+                    stripped_line)
+                if parameter:
+                    args_in_doc.append(parameter.group())
 
         if accept_no_param_doc is None:
             accept_no_param_doc = self.config.accept_no_param_doc
@@ -1230,20 +1222,15 @@ class DocstringParameterChecker(checkers.BaseChecker):
             arg.name for arg in arguments_node.args)
         expected_argument_names.update(
             arg.name for arg in arguments_node.kwonlyargs)
-        not_needed_type_in_docstring = (
-            self.not_needed_param_in_docstring.copy())
 
         if arguments_node.vararg is not None:
-            expected_argument_names.add(arguments_node.vararg)
-            not_needed_type_in_docstring.add(arguments_node.vararg)
+            expected_argument_names.add('*' + arguments_node.vararg)
         if arguments_node.kwarg is not None:
-            expected_argument_names.add(arguments_node.kwarg)
-            not_needed_type_in_docstring.add(arguments_node.kwarg)
-        params_with_doc, params_with_type = doc.match_param_docs()
+            expected_argument_names.add('**' + arguments_node.kwarg)
+        params_with_doc = set(args_in_doc)
 
         # Tolerate no parameter documentation at all.
-        if (not params_with_doc and not params_with_type
-                and accept_no_param_doc):
+        if (not params_with_doc and accept_no_param_doc):
             tolerate_missing_params = True
 
         def _compare_missing_args(
@@ -1293,15 +1280,10 @@ class DocstringParameterChecker(checkers.BaseChecker):
         _compare_missing_args(
             params_with_doc, 'missing-param-doc',
             self.not_needed_param_in_docstring)
-        _compare_missing_args(
-            params_with_type, 'missing-type-doc', not_needed_type_in_docstring)
 
         _compare_different_args(
             params_with_doc, 'differing-param-doc',
             self.not_needed_param_in_docstring)
-        _compare_different_args(
-            params_with_type, 'differing-type-doc',
-            not_needed_type_in_docstring)
 
     def check_single_constructor_params(self, class_doc, init_doc, class_node):
         """Checks whether a class and corresponding  init() method are

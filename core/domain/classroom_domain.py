@@ -24,25 +24,31 @@ from typing import List
 class Classroom:
     """Domain object for a classroom."""
 
-    def __init__(
+    def mockfunction(
         self,
         name: str,
         url_fragment: str,
         topic_ids: List[str],
         course_details: str,
-        topic_list_intro: str
-    ) -> None:
+        topic_list_intro: str,
+        *args
+    ) -> int:
         """Constructs a Classroom domain object.
 
         Args:
-            name: str. The name of the classroom.
-            url_fragment: str. The url fragment of the classroom.
-            topic_ids: list(str). List of topic ids attached to the classroom.
-            course_details: str. Course details for the classroom.
-            topic_list_intro: str. Topic list introduction for the classroom.
+            name- The name of the classroomaaadaaaaaaaaffybghhhhhhhhhhh
+                asssssssssfffffffj.
+            url_fragment- The url fragment of the classroom.
+            topic_ids- List of topic ids attached to the classroom.
+            course_details- Course details for the classroom.
+            topic_list_intro- Topic list introduction for the classroom.
+                just an new implementation.
+            *args- Asdfghjkl.
+
+        Returns:
+            The signature of the payload data The
+            Redirect_stdout object. ajksnjnsjdnkjgkjvjdv
+            asfdvfnnefjnefjgnrjlngfv.
         """
-        self.name = name
-        self.url_fragment = url_fragment
-        self.topic_ids = topic_ids
-        self.course_details = course_details
-        self.topic_list_intro = topic_list_intro
+        test = [name, url_fragment, topic_ids, course_details, topic_list_intro]
+        return 1
