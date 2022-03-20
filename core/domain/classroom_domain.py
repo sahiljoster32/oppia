@@ -18,7 +18,7 @@
 
 from __future__ import annotations
 
-from typing import List
+from typing import Any, List, Tuple
 
 
 class Classroom:
@@ -31,7 +31,7 @@ class Classroom:
         topic_ids: List[str],
         course_details: str,
         topic_list_intro: str,
-        *args
+        *args: Tuple[Any]
     ) -> int:
         """Constructs a Classroom domain object.
 
