@@ -398,42 +398,20 @@ class DocstringParameterChecker(checkers.BaseChecker):
             'missing-return-doc',
             'Please add documentation about what this method returns.',
             {'old_names': [('W9007', 'missing-returns-doc')]}),
-        'W9012': (
-            'Missing return type documentation',
-            'missing-return-type-doc',
-            'Please document the type returned by this method.',
-            # We can't use the same old_name for two different warnings
-            # {'old_names': [('W9007', 'missing-returns-doc')]}.
-        ),
         'W9013': (
             'Missing yield documentation',
             'missing-yield-doc',
             'Please add documentation about what this generator yields.',
             {'old_names': [('W9009', 'missing-yields-doc')]}),
-        'W9014': (
-            'Missing yield type documentation',
-            'missing-yield-type-doc',
-            'Please document the type yielded by this method.',
-        ),
         'W9015': (
             '"%s" missing in parameter documentation',
             'missing-param-doc',
             'Please add parameter declarations for all parameters.',
             {'old_names': [('W9003', 'old-missing-param-doc')]}),
-        'W9016': (
-            '"%s" missing in parameter type documentation',
-            'missing-type-doc',
-            'Please add parameter type declarations for all parameters.'
-        ),
         'W9017': (
             '"%s" differing in parameter documentation',
             'differing-param-doc',
             'Please check parameter names in declarations.',
-        ),
-        'W9018': (
-            '"%s" differing in parameter type documentation',
-            'differing-type-doc',
-            'Please check parameter names in type declarations.',
         ),
         'W9019': (
             'Line starting with "%s" requires 4 space indentation relative to'
