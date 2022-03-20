@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.]
 
-"""Domain objects for Classroom."""
+"""Note: this class is modified just to show that changes are correct."""
 
 from __future__ import annotations
 
@@ -36,14 +36,13 @@ class Classroom:
         """Constructs a Classroom domain object.
 
         Args:
-            name- The name of the classroomaaadaaaaaaaaffybghhhhhhhhhhh
-                asssssssssfffffffj.
+            name- The name of the blah blah.
             url_fragment- The url fragment of the classroom.
             topic_ids- List of topic ids attached to the classroom.
             course_details- Course details for the classroom.
             topic_list_intro- Topic list introduction for the classroom.
                 just an new implementation.
-            *args- Asdfghjkl.
+            *args- just some random text.
 
         Returns:
             The signature of the payload data The
@@ -51,4 +50,4 @@ class Classroom:
             asfdvfnnefjnefjgnrjlngfv.
         """
         test = [name, url_fragment, topic_ids, course_details, topic_list_intro]
-        return 1
+        return 10
