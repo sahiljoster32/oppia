@@ -390,7 +390,7 @@ class DocstringParameterChecker(checkers.BaseChecker):
             'all raised exception types.'),
         'W9008': (
             'Redundant returns documentation',
-            'redundant-returns-docs',
+            'redundant-returns-doc',
             'Please remove the return '
             'documentation from this method.'),
         'W9010': (
@@ -1233,7 +1233,7 @@ class DocstringParameterChecker(checkers.BaseChecker):
                     docstrings_checker.returns_something(
                         ret_node) for ret_node in return_nodes)):
             self.add_message(
-                'redundant-returns-docs',
+                'redundant-returns-doc',
                 node=node)
 
     def check_functiondef_yields(self, node, node_doc):
