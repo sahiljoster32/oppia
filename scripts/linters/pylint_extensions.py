@@ -30,7 +30,13 @@ from core import handler_schema_constants
 from .. import docstrings_checker
 
 EXCLUDE_TYPEINFO_FILES = [
+    'assets/',
+    'core/',
+    'data/',
+    'extensions/'
     'scripts/',
+    'stubs/',
+    'typings/'
 ]
 
 # List of punctuation symbols that can be used at the end of
