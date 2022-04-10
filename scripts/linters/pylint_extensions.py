@@ -33,7 +33,7 @@ EXCLUDE_TYPEINFO_FILES = [
     'assets/',
     'core/',
     'data/',
-    'extensions/'
+    'extensions/',
     'scripts/',
     'stubs/',
     'typings/'
