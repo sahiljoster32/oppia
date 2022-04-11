@@ -1414,33 +1414,16 @@ class DocstringParameterChecker(checkers.BaseChecker):
             self.not_needed_param_in_docstring.copy())
 
         if arguments_node.vararg is not None:
-            if exclude_file:
-                expected_argument_names.add(arguments_node.vararg)
-                not_needed_type_in_docstring.add(arguments_node.vararg)
-            else:
-                expected_argument_names.add('*' + arguments_node.vararg)
+            expected_argument_names.add(arguments_node.vararg)
+            not_needed_type_in_docstring.add(arguments_node.vararg)
         if arguments_node.kwarg is not None:
-            if exclude_file:
-                expected_argument_names.add(arguments_node.kwarg)
-                not_needed_type_in_docstring.add(arguments_node.kwarg)
-            else:
-                expected_argument_names.add('**' + arguments_node.kwarg)
+            expected_argument_names.add(arguments_node.kwarg)
+            not_needed_type_in_docstring.add(arguments_node.kwarg)
 
         if exclude_file:
             params_with_doc, params_with_type = doc.match_param_docs()
         else:
-            args_in_doc = []
-            if doc.has_params():
-                entries = doc._parse_section(  # pylint: disable=protected-access
-                    _check_docs_utils.GoogleDocstring.re_param_section)
-                for entry in entries:
-                    stripped_line = entry.lstrip()
-                    parameter = re.search(
-                        '^[^-:]+',
-                        stripped_line)
-                    if parameter:
-                        args_in_doc.append(parameter.group())
-            params_with_doc = set(args_in_doc)
+            params_with_doc = doc.match_new_param_docs()
 
         # Tolerate no parameter documentation at all.
         if exclude_file:
