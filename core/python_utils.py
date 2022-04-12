@@ -111,9 +111,9 @@ def get_args_of_function_node(function_node, args_to_ignore):
     """
     try:
         return [
-            a.arg
+            a.name
             for a in function_node.args.args
-            if a.arg not in args_to_ignore
+            if a.name not in args_to_ignore
         ]
     except AttributeError:
         return [
