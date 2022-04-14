@@ -2128,7 +2128,8 @@ class DocstringParameterCheckerTests(unittest.TestCase):
             malformed_args_argument, malformed_args_section
         ):
             self.checker_test_object.checker.visit_functiondef(
-                malformed_args_argument_node)    
+                malformed_args_argument_node)
+
 
 class ImportOnlyModulesCheckerTests(unittest.TestCase):
 
