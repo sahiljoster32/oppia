@@ -626,18 +626,31 @@ class DocstringParameterChecker(checkers.BaseChecker):
     DOCSTRING_SECTION_YIELDS = 'yields'
     DOCSTRING_SECTION_RAISES = 'raises'
 
-    def exclude_current_file(self):
+    EXCLUDE_TYPEINFO_FILES = [
+    'assets/',
+    'data/',
+    'extensions/',
+    'scripts/',
+    'stubs/',
+    'typings/'
+    ]
+
+    def exclude_current_file(self, node):
         """checks whether a current file will follow the updated docstring
         lint checks or old docstring lint checks.
+
+        Args:
+            node: astroid.scoped_nodes.Function. Node for a function or
+                method definition in the AST.
 
         Returns:
             bool. True if the current file follow the old docstring lint
             checks, otherwise False.
         """
-        for file in EXCLUDE_TYPEINFO_FILES:
+        for file in self.EXCLUDE_TYPEINFO_FILES:
             exclude_status = re.search(
                 f'{file}',
-                self.linter.current_name.replace('.', '/')
+                node.root().file.replace('.', '/')
             )
             if exclude_status:
                 return True
@@ -681,14 +694,14 @@ class DocstringParameterChecker(checkers.BaseChecker):
             node: astroid.scoped_nodes.Function. Node for a function or
                 method definition in the AST.
         """
-        exclude_file = self.exclude_current_file()
+        exclude_file = self.exclude_current_file(node)
 
         node_doc = docstrings_checker.docstringify(node.doc)
         self.check_functiondef_params(node, node_doc)
         self.check_functiondef_returns(node, node_doc)
         self.check_functiondef_yields(node, node_doc)
         self.check_docstring_style(node)
-        self.check_docstring_section_indentation(node, exclude_file)
+        self.check_docstring_section_indentation(node)
         if exclude_file:
             self.check_old_typeinfo_format(node, node_doc)
         else:
@@ -1025,7 +1038,7 @@ class DocstringParameterChecker(checkers.BaseChecker):
                       any(word in docstring[-2] for word in EXCLUDED_PHRASES)):
                     self.add_message('no-period-used', node=node)
 
-    def check_docstring_section_indentation(self, node, exclude_new_style):
+    def check_docstring_section_indentation(self, node):
         """Checks whether the function argument definitions ("Args": section,
         "Returns": section, "Yield": section, "Raises: section) are indented
         properly. Parameters should be indented by 4 relative to the 'Args:'
@@ -1035,9 +1048,8 @@ class DocstringParameterChecker(checkers.BaseChecker):
         Args:
             node: astroid.scoped_nodes.Function. Node for a function or
                 method definition in the AST.
-            exclude_new_style: bool. True if file follow the old docstring
-                lint checks and vice-versa.
         """
+        exclude_file = self.exclude_current_file(node)
         arguments_node = node.args
         expected_argument_names = set(
             None if (arg.name in self.not_needed_param_in_docstring)
@@ -1123,7 +1135,7 @@ class DocstringParameterChecker(checkers.BaseChecker):
                           self.DOCSTRING_SECTION_YIELDS)):
                     # Check for the start of a new parameter definition in the
                     # format "type (elaboration)." and check the indentation.
-                    if exclude_new_style:
+                    if exclude_file:
                         search_pattern = r'^[a-zA-Z_() -:,\*]+\.'
                     else:
                         search_pattern = r'^[A-Z0-9](.*)'
@@ -1300,7 +1312,7 @@ class DocstringParameterChecker(checkers.BaseChecker):
         if not docstrings_checker.returns_something(node):
             return
 
-        exclude_file = self.exclude_current_file()
+        exclude_file = self.exclude_current_file(node)
         func_node = node.frame()
 
         doc = docstrings_checker.docstringify(func_node.doc)
@@ -1332,7 +1344,7 @@ class DocstringParameterChecker(checkers.BaseChecker):
             node: astroid.scoped_nodes.Function. Node for a function or
                 method definition in the AST.
         """
-        exclude_file = self.exclude_current_file()
+        exclude_file = self.exclude_current_file(node)
         func_node = node.frame()
 
         doc = docstrings_checker.docstringify(func_node.doc)
@@ -1404,7 +1416,7 @@ class DocstringParameterChecker(checkers.BaseChecker):
             accept_no_param_doc = self.config.accept_no_param_doc
         tolerate_missing_params = doc.params_documented_elsewhere()
 
-        exclude_file = self.exclude_current_file()
+        exclude_file = self.exclude_current_file(warning_node)
         # Collect the function arguments.
         expected_argument_names = set(
             arg.name for arg in arguments_node.args)
