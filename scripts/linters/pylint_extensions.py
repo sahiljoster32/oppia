@@ -875,8 +875,7 @@ class DocstringParameterChecker(checkers.BaseChecker):
             entries = node_doc._parse_section(  # pylint: disable=protected-access
                 _check_docs_utils.GoogleDocstring.re_param_section)
             for entry in entries:
-                if entry.lstrip().startswith('*args: list(*)') and not (
-                        entry.lstrip().startswith('*args:')):
+                if entry.lstrip().startswith('*args: list(*)'):
                     self.add_message('malformed-args-argument', node=node)
                 match = re_param_line.match(entry)
                 if not match:

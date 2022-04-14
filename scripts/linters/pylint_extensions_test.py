@@ -2033,6 +2033,30 @@ class DocstringParameterCheckerTests(unittest.TestCase):
             self.checker_test_object.checker.visit_functiondef(
                 valid_yields_documentation)
 
+        invalid_yields_documentation = astroid.extract_node(
+            """
+        def func(test_var_one, test_var_two): #@
+            \"\"\"Function to test docstring parameters.
+
+            Args:
+                test_var_one: First test variable.
+                test_var_two: Second test variable.
+
+            Yields:
+                int. The test result.
+            \"\"\"
+            result = test_var_one + test_var_two
+            yield result
+        """)
+        malformed_yields_section = testutils.Message(
+            msg_id='malformed-yields-section',
+            node=invalid_yields_documentation)
+        with self.checker_test_object.assertAddsMessages(
+            malformed_yields_section
+        ):
+            self.checker_test_object.checker.visit_functiondef(
+                invalid_yields_documentation)
+
     def test_correct_returns_indentation_in_new_docstring_style(self):
         incorrect_returns_indentation_node = astroid.extract_node(
             """
@@ -2081,6 +2105,30 @@ class DocstringParameterCheckerTests(unittest.TestCase):
         ):
             self.checker_test_object.checker.visit_functiondef(
                 missing_argument_node)
+
+    def test_correct_extra_args_in_new_docstring_style(self):
+        malformed_args_argument_node = astroid.extract_node(
+            """
+        def func(*args): #@
+            \"\"\"Function to test docstring parameters.
+
+            Args:
+                *args: list(*). First test variable.
+            \"\"\"
+            result = test_var_one + test_var_two
+        """)
+
+        malformed_args_argument = testutils.Message(
+            msg_id='malformed-args-argument',
+            node=malformed_args_argument_node,)
+        malformed_args_section = testutils.Message(
+            msg_id='malformed-args-section',
+            node=malformed_args_argument_node)
+        with self.checker_test_object.assertAddsMessages(
+            malformed_args_argument, malformed_args_section
+        ):
+            self.checker_test_object.checker.visit_functiondef(
+                malformed_args_argument_node)    
 
 class ImportOnlyModulesCheckerTests(unittest.TestCase):
 
