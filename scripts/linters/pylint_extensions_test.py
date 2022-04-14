@@ -1916,6 +1916,171 @@ class DocstringParameterCheckerTests(unittest.TestCase):
         ):
             self.checker_test_object.checker.visit_raise(raise_node)
 
+    def test_missing_args_section_in_doctring(self):
+        node_with_no_error_message = astroid.extract_node(
+            u"""def func(arg): #@
+                    \"\"\"This is a docstring.\"\"\"
+                    Something
+        """)
+
+        missing_arg_doc = testutils.Message(
+            msg_id='missing-arg-doc',
+            node=node_with_no_error_message)
+        with self.checker_test_object.assertAddsMessages(
+            missing_arg_doc):
+            self.checker_test_object.checker.visit_functiondef(
+                node_with_no_error_message)
+
+    def test_correct_args_formatting_in_new_docstring_style(self):
+        incorrect_args_format_in_new_style = astroid.extract_node(
+            """
+        def func(test_var_one, test_var_two): #@
+            \"\"\"Function to test docstring parameters.
+
+            Args:
+                test_var_one: int. First test variable.
+                test_var_two: str. Second test variable.
+            \"\"\"
+            result = test_var_one + test_var_two
+        """)
+        malformed_args_section = testutils.Message(
+            msg_id='malformed-args-section',
+            node=incorrect_args_format_in_new_style)
+        with self.checker_test_object.assertAddsMessages(
+            malformed_args_section,
+            malformed_args_section
+        ):
+            self.checker_test_object.checker.visit_functiondef(
+                incorrect_args_format_in_new_style)
+
+        correct_args_format_in_new_style = astroid.extract_node(
+            """
+        def func(test_var_one, test_var_two): #@
+            \"\"\"Function to test docstring parameters.
+
+            Args:
+                test_var_one: First test variable.
+                test_var_two: Second test variable.
+            \"\"\"
+            result = test_var_one + test_var_two
+        """)
+        with self.checker_test_object.assertNoMessages():
+            self.checker_test_object.checker.visit_functiondef(
+                correct_args_format_in_new_style)
+
+    def test_correct_returns_formatting_in_new_docstring_style(self):
+        invalid_return_documentation = astroid.extract_node(
+            """
+        def func(test_var_one, test_var_two): #@
+            \"\"\"Function to test docstring parameters.
+
+            Args:
+                test_var_one: First test variable.
+                test_var_two: Second test variable.
+
+            Returns:
+                int. The test result.
+            \"\"\"
+            result = test_var_one + test_var_two
+            return result
+        """)
+
+        malformed_returns_section = testutils.Message(
+            msg_id='malformed-returns-section',
+            node=invalid_return_documentation)
+        with self.checker_test_object.assertAddsMessages(
+            malformed_returns_section
+        ):
+            self.checker_test_object.checker.visit_functiondef(
+                invalid_return_documentation)
+
+        valid_return_documentation = astroid.extract_node(
+            """
+        def func(test_var_one, test_var_two): #@
+            \"\"\"Function to test docstring parameters.
+
+            Args:
+                test_var_one: First test variable.
+                test_var_two: Second test variable.
+
+            Returns:
+                The test result.
+            \"\"\"
+            result = test_var_one + test_var_two
+            return result
+        """)
+        with self.checker_test_object.assertNoMessages():
+            self.checker_test_object.checker.visit_functiondef(
+                valid_return_documentation)
+
+    def test_correct_yields_formatting_in_new_docstring_style(self):
+        valid_yields_documentation = astroid.extract_node(
+            """
+        def func(test_var_one, test_var_two): #@
+            \"\"\"Function to test docstring parameters.
+
+            Args:
+                test_var_one: First test variable.
+                test_var_two: Second test variable.
+
+            Yields:
+                The test result.
+            \"\"\"
+            result = test_var_one + test_var_two
+            yield result
+        """)
+        with self.checker_test_object.assertNoMessages():
+            self.checker_test_object.checker.visit_functiondef(
+                valid_yields_documentation)
+
+    def test_correct_returns_indentation_in_new_docstring_style(self):
+        incorrect_returns_indentation_node = astroid.extract_node(
+            """
+        def func(test_var_one, test_var_two): #@
+            \"\"\"Function to test docstring parameters.
+
+            Args:
+                test_var_one: First test variable.
+                test_var_two: Second test variable.
+
+            Yields:
+                The test result and some
+                    extra description.
+            \"\"\"
+            result = test_var_one + test_var_two
+            yield result
+        """)
+
+        incorrect_returns_indentation = testutils.Message(
+            msg_id='4-space-indentation-in-docstring',
+            node=incorrect_returns_indentation_node)
+        with self.checker_test_object.assertAddsMessages(
+            incorrect_returns_indentation
+        ):
+            self.checker_test_object.checker.visit_functiondef(
+                incorrect_returns_indentation_node)
+
+    def test_missing_args_in_new_docstring_style(self):
+        missing_argument_node = astroid.extract_node(
+            """
+        def func(test_var_one, test_var_two): #@
+            \"\"\"Function to test docstring parameters.
+
+            Args:
+                test_var_one: First test variable.
+            \"\"\"
+            result = test_var_one + test_var_two
+        """)
+
+        missing_param_doc = testutils.Message(
+            msg_id='missing-param-doc',
+            node=missing_argument_node,
+            args=('test_var_two',))
+        with self.checker_test_object.assertAddsMessages(
+            missing_param_doc
+        ):
+            self.checker_test_object.checker.visit_functiondef(
+                missing_argument_node)
 
 class ImportOnlyModulesCheckerTests(unittest.TestCase):
 
