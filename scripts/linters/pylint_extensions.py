@@ -705,10 +705,11 @@ class DocstringParameterChecker(checkers.BaseChecker):
             node_doc: Docstring. Pylint Docstring class instance representing
                 a node's docstring.
         """
+        args_in_function_node = set(
+            arg.name for arg in node.args.args)
+
         expected_argument_names = (
-            docstrings_checker.ASTDocStringChecker.get_args_list_from_function_definition(  # pylint: disable=line-too-long
-                node
-            ))
+            args_in_function_node - self.not_needed_param_in_docstring)
 
         if not node_doc.has_params() and (expected_argument_names):
             self.add_message(
