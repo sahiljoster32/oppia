@@ -628,6 +628,7 @@ class DocstringParameterChecker(checkers.BaseChecker):
 
     EXCLUDE_TYPEINFO_FILES = [
     'assets/',
+    'core/',
     'data/',
     'extensions/',
     'scripts/',
