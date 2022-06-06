@@ -341,7 +341,7 @@ class DocstringParameterCheckerTests(unittest.TestCase):
         self.checker_test_object.CHECKER_CLASS = (
             pylint_extensions.DocstringParameterChecker)
         self.checker_test_object.setup_method()
-        self.checker_test_object.checker.EXCLUDE_TYPEINFO_FILES = (
+        self.checker_test_object.checker.DIRS_WITH_NO_TYPEINFO_IN_DOCSTRINGS = (
             ['old_style_docstring.file'])
 
     def test_no_newline_below_class_docstring(self):
@@ -1355,7 +1355,7 @@ class DocstringParameterCheckerTests(unittest.TestCase):
         self.checker_test_object.CHECKER_CLASS = (
             pylint_extensions.DocstringParameterChecker)
         self.checker_test_object.setup_method()
-        self.checker_test_object.checker.EXCLUDE_TYPEINFO_FILES = (
+        self.checker_test_object.checker.DIRS_WITH_NO_TYPEINFO_IN_DOCSTRINGS = (
             ['old_style_docstring.file'])
         invalid_args_description_node = astroid.extract_node(
             """
@@ -1445,7 +1445,7 @@ class DocstringParameterCheckerTests(unittest.TestCase):
         self.checker_test_object.CHECKER_CLASS = (
             pylint_extensions.DocstringParameterChecker)
         self.checker_test_object.setup_method()
-        self.checker_test_object.checker.EXCLUDE_TYPEINFO_FILES = (
+        self.checker_test_object.checker.DIRS_WITH_NO_TYPEINFO_IN_DOCSTRINGS = (
             ['old_style_docstring.file'])
         valid_free_form_node = astroid.extract_node(
             """
@@ -1499,7 +1499,7 @@ class DocstringParameterCheckerTests(unittest.TestCase):
         self.checker_test_object.CHECKER_CLASS = (
             pylint_extensions.DocstringParameterChecker)
         self.checker_test_object.setup_method()
-        self.checker_test_object.checker.EXCLUDE_TYPEINFO_FILES = (
+        self.checker_test_object.checker.DIRS_WITH_NO_TYPEINFO_IN_DOCSTRINGS = (
             ['old_style_docstring.file'])
         valid_func_node, valid_return_node = astroid.extract_node(
             """
