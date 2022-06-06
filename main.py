@@ -1011,7 +1011,7 @@ class NdbWsgiMiddleware:
         environ: Dict[str, str],
         start_response: webapp2.Response
     ) -> webapp2.Response:
-        """This function is invoked whenever N dbWsgiMiddleware's object
+        """This function is invoked whenever NdbWsgiMiddleware's object
         is called.
 
         Args:
