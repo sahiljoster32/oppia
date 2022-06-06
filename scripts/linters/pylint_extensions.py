@@ -29,15 +29,6 @@ from core import handler_schema_constants
 
 from .. import docstrings_checker
 
-EXCLUDE_TYPEINFO_FILES = [
-    'assets/',
-    'core/',
-    'data/',
-    'extensions/',
-    'scripts/',
-    'stubs/',
-    'typings/'
-]
 
 # List of punctuation symbols that can be used at the end of
 # comments and docstrings.
@@ -626,7 +617,7 @@ class DocstringParameterChecker(checkers.BaseChecker):
     DOCSTRING_SECTION_YIELDS = 'yields'
     DOCSTRING_SECTION_RAISES = 'raises'
 
-    EXCLUDE_TYPEINFO_FILES = [
+    DIRS_WITH_NO_TYPEINFO_IN_DOCSTRINGS = [
     'assets/',
     'core/',
     'data/',
@@ -648,7 +639,7 @@ class DocstringParameterChecker(checkers.BaseChecker):
             bool. True if the current file follow the old docstring lint
             checks, otherwise False.
         """
-        for file in self.EXCLUDE_TYPEINFO_FILES:
+        for file in self.DIRS_WITH_NO_TYPEINFO_IN_DOCSTRINGS:
             exclude_status = re.search(
                 f'{file}',
                 node.root().file.replace('.', '/')
