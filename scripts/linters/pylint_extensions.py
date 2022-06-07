@@ -2147,11 +2147,11 @@ class ExceptionalTypesCommentChecker(checkers.BaseChecker):
                 if token == 'object':
                     if object_already_encountered_line_num == line_num:
                         continue
+                    object_already_encountered_line_num = line_num
                     # Excluding the case when object is called:
                     # Eg: var = object()
                     if 'object()' in line:
                         continue
-                    object_already_encountered_line_num = line_num
                     if object_comment_present:
                         object_comment_present = False
                     else:
