@@ -840,12 +840,12 @@ class DocstringParameterChecker(checkers.BaseChecker):
             r"""
             \s*  \*{0,2}(\w+)          # identifier potentially with asterisks
             \s*  ([:])             # seperator for indentifier and description.
-            \s*  [A-Z0-9](.*)[.\]}}\)]+$     # beginning of optional description
+            \s*  [A-Z0-9](.*)[.\]}\)]+$     # beginning of optional description
         """, flags=re.X | re.S | re.M)
 
         re_returns_line = re.compile(
             r"""
-            \s* [A-Z0-9](.*)[.\]}}\)]+$               # beginning of description
+            \s* [A-Z0-9](.*)[.\]}\)]+$               # beginning of description
         """, flags=re.X | re.S | re.M)
 
         re_yields_line = re_returns_line

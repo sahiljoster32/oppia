@@ -201,7 +201,7 @@ class GoogleDocstring(_check_docs_utils.GoogleDocstring):
         r"""
         \s*  \*{0,2}(\w+)             # identifier potentially with asterisks
         \s*  ([:])                    # optional type declaration
-        \s*  ([A-Z0-9](.*)[.\]}}\)]+$)     # beginning of optional description
+        \s*  ([A-Z0-9](.*)[.\]}\)]+$)     # beginning of optional description
     """, flags=re.X | re.S | re.M)
 
     re_returns_line = re.compile(
