@@ -372,6 +372,8 @@ class DocstringParameterCheckerTests(unittest.TestCase):
         self.checker_test_object.CHECKER_CLASS = (
             pylint_extensions.DocstringParameterChecker)
         self.checker_test_object.setup_method()
+        self.checker_test_object.checker.DIRS_WITH_NO_TYPEINFO_IN_DOCSTRINGS = (
+            ['old_style_docstring.file'])
 
     def test_no_newline_below_class_docstring(self):
         node_no_newline_below_class_docstring = astroid.scoped_nodes.Module(
@@ -626,9 +628,9 @@ class DocstringParameterCheckerTests(unittest.TestCase):
                 \"\"\"
                 a = True
         """)
-
+        node_malformed_args_section.root().file = 'old_style_docstring.file'
         message = testutils.Message(
-            msg_id='malformed-args-section',
+            msg_id='malformed-args-section_old_style',
             node=node_malformed_args_section
         )
 
@@ -647,8 +649,9 @@ class DocstringParameterCheckerTests(unittest.TestCase):
                 return True
         """)
 
+        node_malformed_returns_section.root().file = 'old_style_docstring.file'
         message = testutils.Message(
-            msg_id='malformed-returns-section',
+            msg_id='malformed-returns-section_old_style',
             node=node_malformed_returns_section
         )
 
@@ -667,8 +670,9 @@ class DocstringParameterCheckerTests(unittest.TestCase):
                 yield True
         """)
 
+        node_malformed_yields_section.root().file = 'old_style_docstring.file'
         message = testutils.Message(
-            msg_id='malformed-yields-section',
+            msg_id='malformed-yields-section_old_style',
             node=node_malformed_yields_section
         )
 
@@ -706,9 +710,9 @@ class DocstringParameterCheckerTests(unittest.TestCase):
                 \"\"\"
                 a = True
         """)
-
+        node_malformed_args_argument.root().file = 'old_style_docstring.file'
         message = testutils.Message(
-            msg_id='malformed-args-argument',
+            msg_id='malformed-args-argument_old_style',
             node=node_malformed_args_argument
         )
 
@@ -727,6 +731,7 @@ class DocstringParameterCheckerTests(unittest.TestCase):
                 a = True
         """)
 
+        node_with_no_error_message.root().file = 'old_style_docstring.file'
         with self.checker_test_object.assertAddsMessages():
             self.checker_test_object.checker.visit_functiondef(
                 node_with_no_error_message)
@@ -742,6 +747,7 @@ class DocstringParameterCheckerTests(unittest.TestCase):
                 a = True
         """)
 
+        node_with_no_error_message.root().file = 'old_style_docstring.file'
         with self.checker_test_object.assertAddsMessages():
             self.checker_test_object.checker.visit_functiondef(
                 node_with_no_error_message)
@@ -757,6 +763,7 @@ class DocstringParameterCheckerTests(unittest.TestCase):
                 return args
         """)
 
+        node_with_no_error_message.root().file = 'old_style_docstring.file'
         with self.checker_test_object.assertAddsMessages():
             self.checker_test_object.checker.visit_functiondef(
                 node_with_no_error_message)
@@ -772,6 +779,7 @@ class DocstringParameterCheckerTests(unittest.TestCase):
                 yield args
         """)
 
+        node_with_no_error_message.root().file = 'old_style_docstring.file'
         with self.checker_test_object.assertAddsMessages():
             self.checker_test_object.checker.visit_functiondef(
                 node_with_no_error_message)
@@ -864,10 +872,13 @@ class DocstringParameterCheckerTests(unittest.TestCase):
                     Something
         """)
 
+        node_no_period_at_end.root().file = 'old_style_docstring.file'
         no_period_at_end_message = testutils.Message(
             msg_id='no-period-used', node=node_no_period_at_end)
         malformed_args_message = testutils.Message(
-            msg_id='malformed-args-section', node=node_no_period_at_end)
+            msg_id='malformed-args-section_old_style',
+            node=node_no_period_at_end
+        )
 
         with self.checker_test_object.assertAddsMessages(
             no_period_at_end_message, malformed_args_message):
@@ -884,6 +895,7 @@ class DocstringParameterCheckerTests(unittest.TestCase):
                     Something
         """)
 
+        node_no_newline_at_end.root().file = 'old_style_docstring.file'
         message = testutils.Message(
             msg_id='no-newline-used-at-end', node=node_no_newline_at_end)
 
@@ -900,6 +912,7 @@ class DocstringParameterCheckerTests(unittest.TestCase):
                 \"\"\"
         """)
 
+        node_single_newline_above_args.root().file = 'old_style_docstring.file'
         message = testutils.Message(
             msg_id='single-space-above-args',
             node=node_single_newline_above_args)
@@ -937,6 +950,7 @@ class DocstringParameterCheckerTests(unittest.TestCase):
                 return something
         """)
 
+        node_with_no_space_above_return.root().file = 'old_style_docstring.file'
         message = testutils.Message(
             msg_id='single-space-above-returns',
             node=node_with_no_space_above_return
@@ -959,6 +973,7 @@ class DocstringParameterCheckerTests(unittest.TestCase):
                 raise exception
         """)
 
+        node_newline_above_args_raises.root().file = 'old_style_docstring.file'
         message = testutils.Message(
             msg_id='single-space-above-raises',
             node=node_newline_above_args_raises
@@ -980,6 +995,7 @@ class DocstringParameterCheckerTests(unittest.TestCase):
                 return something
         """)
 
+        node_newline_above_args_returns.root().file = 'old_style_docstring.file'
         message = testutils.Message(
             msg_id='single-space-above-returns',
             node=node_newline_above_args_returns
@@ -1005,6 +1021,8 @@ class DocstringParameterCheckerTests(unittest.TestCase):
                 return something
         """)
 
+        node_newline_above_returns_raises.root().file = (
+            'old_style_docstring.file')
         message = testutils.Message(
             msg_id='single-space-above-raises',
             node=node_newline_above_returns_raises
@@ -1035,6 +1053,7 @@ class DocstringParameterCheckerTests(unittest.TestCase):
                     yield something
         """)
 
+        node_with_two_newline.root().file = 'old_style_docstring.file'
         single_space_above_args_message = testutils.Message(
             msg_id='single-space-above-args',
             node=node_with_two_newline
@@ -1071,6 +1090,7 @@ class DocstringParameterCheckerTests(unittest.TestCase):
                     return something
         """)
 
+        node_with_return_in_comment.root().file = 'old_style_docstring.file'
         with self.checker_test_object.assertNoMessages():
             self.checker_test_object.checker.visit_functiondef(
                 node_with_return_in_comment)
@@ -1109,6 +1129,7 @@ class DocstringParameterCheckerTests(unittest.TestCase):
                     return something
         """)
 
+        node_with_no_error_message.root().file = 'old_style_docstring.file'
         with self.checker_test_object.assertNoMessages():
             self.checker_test_object.checker.visit_functiondef(
                 node_with_no_error_message)
@@ -1124,6 +1145,7 @@ class DocstringParameterCheckerTests(unittest.TestCase):
                     Something
         """)
 
+        raises_invalid_indentation_node.root().file = 'old_style_docstring.file'
         message = testutils.Message(
             msg_id='4-space-indentation-in-docstring',
             node=raises_invalid_indentation_node)
@@ -1142,6 +1164,8 @@ class DocstringParameterCheckerTests(unittest.TestCase):
                     \"\"\"
                     Something
         """)
+
+        return_invalid_indentation_node.root().file = 'old_style_docstring.file'
         message = testutils.Message(
             msg_id='4-space-indentation-in-docstring',
             node=return_invalid_indentation_node)
@@ -1161,6 +1185,8 @@ class DocstringParameterCheckerTests(unittest.TestCase):
                     Something
         """)
 
+        invalid_raises_description_indentation_node.root().file = (
+            'old_style_docstring.file')
         incorrect_indentation_message = testutils.Message(
             msg_id='8-space-indentation-in-docstring',
             node=invalid_raises_description_indentation_node)
@@ -1184,6 +1210,9 @@ class DocstringParameterCheckerTests(unittest.TestCase):
                     \"\"\"
                     return Something
         """)
+
+        invalid_return_description_indentation_node.root().file = (
+            'old_style_docstring.file')
         message = testutils.Message(
             msg_id='4-space-indentation-in-docstring',
             node=invalid_return_description_indentation_node)
@@ -1201,6 +1230,9 @@ class DocstringParameterCheckerTests(unittest.TestCase):
                     \"\"\"
                     yield Something
         """)
+
+        invalid_yield_description_indentation_node.root().file = (
+            'old_style_docstring.file')
         message = testutils.Message(
             msg_id='4-space-indentation-in-docstring',
             node=invalid_yield_description_indentation_node)
@@ -1220,6 +1252,7 @@ class DocstringParameterCheckerTests(unittest.TestCase):
                     Something
         """)
 
+        invalid_parameter_name.root().file = 'old_style_docstring.file'
         malformed_raises_message = testutils.Message(
             msg_id='malformed-raises-section',
             node=invalid_parameter_name)
@@ -1236,6 +1269,7 @@ class DocstringParameterCheckerTests(unittest.TestCase):
                     Something
         """)
 
+        node_with_no_error_message.root().file = 'old_style_docstring.file'
         with self.checker_test_object.assertNoMessages():
             self.checker_test_object.checker.visit_functiondef(
                 node_with_no_error_message)
@@ -1251,6 +1285,7 @@ class DocstringParameterCheckerTests(unittest.TestCase):
                     Something
         """)
 
+        node_with_no_error_message.root().file = 'old_style_docstring.file'
         with self.checker_test_object.assertNoMessages():
             self.checker_test_object.checker.visit_functiondef(
                 node_with_no_error_message)
@@ -1269,6 +1304,7 @@ class DocstringParameterCheckerTests(unittest.TestCase):
                     Something
         """)
 
+        node_with_no_error_message.root().file = 'old_style_docstring.file'
         with self.checker_test_object.assertNoMessages():
             self.checker_test_object.checker.visit_functiondef(
                 node_with_no_error_message)
@@ -1287,6 +1323,8 @@ class DocstringParameterCheckerTests(unittest.TestCase):
                     \"\"\"
                     Something
         """)
+
+        node_with_no_error_message.root().file = 'old_style_docstring.file'
         with self.checker_test_object.assertNoMessages():
             self.checker_test_object.checker.visit_functiondef(
                 node_with_no_error_message)
@@ -1310,6 +1348,8 @@ class DocstringParameterCheckerTests(unittest.TestCase):
                     else:
                         yield something
         """)
+
+        node_with_no_error_message.root().file = 'old_style_docstring.file'
         with self.checker_test_object.assertNoMessages():
             self.checker_test_object.checker.visit_functiondef(
                 node_with_no_error_message)
@@ -1335,6 +1375,8 @@ class DocstringParameterCheckerTests(unittest.TestCase):
                     else:
                         yield (a, b)
         """)
+
+        node_with_no_error_message.root().file = 'old_style_docstring.file'
         with self.checker_test_object.assertNoMessages():
             self.checker_test_object.checker.visit_functiondef(
                 node_with_no_error_message)
@@ -1344,6 +1386,8 @@ class DocstringParameterCheckerTests(unittest.TestCase):
         self.checker_test_object.CHECKER_CLASS = (
             pylint_extensions.DocstringParameterChecker)
         self.checker_test_object.setup_method()
+        self.checker_test_object.checker.DIRS_WITH_NO_TYPEINFO_IN_DOCSTRINGS = (
+            ['old_style_docstring.file'])
         invalid_args_description_node = astroid.extract_node(
             """
         def func(test_var_one, test_var_two): #@
@@ -1360,6 +1404,8 @@ class DocstringParameterCheckerTests(unittest.TestCase):
             result = test_var_one + test_var_two
             return result
         """)
+
+        invalid_args_description_node.root().file = 'old_style_docstring.file'
         with self.checker_test_object.assertAddsMessages(
             testutils.Message(
                 msg_id='8-space-indentation-for-arg-in-descriptions-doc',
@@ -1367,7 +1413,7 @@ class DocstringParameterCheckerTests(unittest.TestCase):
                 args='Incorrect'
             ),
             testutils.Message(
-                msg_id='malformed-args-section',
+                msg_id='malformed-args-section_old_style',
                 node=invalid_args_description_node,
             )
         ):
@@ -1388,6 +1434,8 @@ class DocstringParameterCheckerTests(unittest.TestCase):
             result = test_var_one + test_var_two
             return result
         """)
+
+        invalid_param_indentation_node.root().file = 'old_style_docstring.file'
         with self.checker_test_object.assertAddsMessages(
             testutils.Message(
                 msg_id='4-space-indentation-for-arg-parameters-doc',
@@ -1412,6 +1460,8 @@ class DocstringParameterCheckerTests(unittest.TestCase):
             result = test_var_one + test_var_two
             return result
         """)
+
+        invalid_header_indentation_node.root().file = 'old_style_docstring.file'
         with self.checker_test_object.assertAddsMessages(
             testutils.Message(
                 msg_id='incorrect-indentation-for-arg-header-doc',
@@ -1426,6 +1476,8 @@ class DocstringParameterCheckerTests(unittest.TestCase):
         self.checker_test_object.CHECKER_CLASS = (
             pylint_extensions.DocstringParameterChecker)
         self.checker_test_object.setup_method()
+        self.checker_test_object.checker.DIRS_WITH_NO_TYPEINFO_IN_DOCSTRINGS = (
+            ['old_style_docstring.file'])
         valid_free_form_node = astroid.extract_node(
             """
         def func(test_var_one, test_var_two): #@
@@ -1445,6 +1497,8 @@ class DocstringParameterCheckerTests(unittest.TestCase):
             result = test_var_one + test_var_two
             return result
         """)
+
+        valid_free_form_node.root().file = 'old_style_docstring.file'
         with self.checker_test_object.assertNoMessages():
             self.checker_test_object.checker.visit_functiondef(
                 valid_free_form_node)
@@ -1465,6 +1519,8 @@ class DocstringParameterCheckerTests(unittest.TestCase):
             result = test_var_one + test_var_two
             return result
         """)
+
+        valid_indentation_node.root().file = 'old_style_docstring.file'
         with self.checker_test_object.assertNoMessages():
             self.checker_test_object.checker.visit_functiondef(
                 valid_indentation_node)
@@ -1474,6 +1530,8 @@ class DocstringParameterCheckerTests(unittest.TestCase):
         self.checker_test_object.CHECKER_CLASS = (
             pylint_extensions.DocstringParameterChecker)
         self.checker_test_object.setup_method()
+        self.checker_test_object.checker.DIRS_WITH_NO_TYPEINFO_IN_DOCSTRINGS = (
+            ['old_style_docstring.file'])
         valid_func_node, valid_return_node = astroid.extract_node(
             """
         def test(test_var_one, test_var_two): #@
@@ -1489,6 +1547,9 @@ class DocstringParameterCheckerTests(unittest.TestCase):
             result = test_var_one + test_var_two
             return result #@
         """)
+
+        valid_func_node.root().file = 'old_style_docstring.file'
+        valid_return_node.root().file = 'old_style_docstring.file'
         with self.checker_test_object.assertNoMessages():
             self.checker_test_object.checker.visit_functiondef(valid_func_node)
         with self.checker_test_object.assertNoMessages():
@@ -1501,6 +1562,9 @@ class DocstringParameterCheckerTests(unittest.TestCase):
             result = test_var_one + test_var_two
             yield result #@
         """)
+
+        valid_func_node.root().file = 'old_style_docstring.file'
+        valid_yield_node.root().file = 'old_style_docstring.file'
         with self.checker_test_object.assertNoMessages():
             self.checker_test_object.checker.visit_functiondef(valid_func_node)
         with self.checker_test_object.assertNoMessages():
@@ -1526,6 +1590,9 @@ class DocstringParameterCheckerTests(unittest.TestCase):
                 result = test_var_one + test_var_two
                 yield result #@
         """)
+
+        missing_yield_type_func_node.root().file = 'old_style_docstring.file'
+        missing_yield_type_yield_node.root().file = 'old_style_docstring.file'
         with self.checker_test_object.assertAddsMessages(
             testutils.Message(
                 msg_id='redundant-returns-doc',
@@ -1567,6 +1634,9 @@ class DocstringParameterCheckerTests(unittest.TestCase):
                 result = test_var_one + test_var_two
                 return result #@
         """)
+
+        missing_return_type_func_node.root().file = 'old_style_docstring.file'
+        missing_return_type_return_node.root().file = 'old_style_docstring.file'
         with self.checker_test_object.assertAddsMessages(
             testutils.Message(
                 msg_id='redundant-yields-doc',
@@ -1604,6 +1674,7 @@ class DocstringParameterCheckerTests(unittest.TestCase):
             \"\"\"
             raise Exception #@
         """)
+        valid_raise_node.root().file = 'old_style_docstring.file'
         with self.checker_test_object.assertNoMessages():
             self.checker_test_object.checker.visit_raise(valid_raise_node)
 
@@ -1635,6 +1706,7 @@ class DocstringParameterCheckerTests(unittest.TestCase):
         class Test:
             raise Exception #@
         """)
+        valid_raise_node.root().file = 'old_style_docstring.file'
         with self.checker_test_object.assertNoMessages():
             self.checker_test_object.checker.visit_raise(valid_raise_node)
 
@@ -1650,6 +1722,7 @@ class DocstringParameterCheckerTests(unittest.TestCase):
             def func(self):
                 raise Exception #@
         """)
+        valid_raise_node.root().file = 'old_style_docstring.file'
         with self.checker_test_object.assertNoMessages():
             self.checker_test_object.checker.visit_raise(valid_raise_node)
 
@@ -1659,6 +1732,7 @@ class DocstringParameterCheckerTests(unittest.TestCase):
             def func(self):
                 raise Exception #@
         """)
+        valid_raise_node.root().file = 'old_style_docstring.file'
         with self.checker_test_object.assertNoMessages():
             self.checker_test_object.checker.visit_raise(valid_raise_node)
 
@@ -1670,6 +1744,7 @@ class DocstringParameterCheckerTests(unittest.TestCase):
             except Exception:
                 pass
         """)
+        valid_raise_node.root().file = 'old_style_docstring.file'
         with self.checker_test_object.assertNoMessages():
             self.checker_test_object.checker.visit_raise(valid_raise_node)
 
@@ -1758,6 +1833,8 @@ class DocstringParameterCheckerTests(unittest.TestCase):
             result = test_var_one + test_var_two
             return result
         """)
+
+        missing_param_func_node.root().file = 'old_style_docstring.file'
         with self.checker_test_object.assertAddsMessages(
             testutils.Message(
                 msg_id='missing-param-doc',
@@ -1783,6 +1860,8 @@ class DocstringParameterCheckerTests(unittest.TestCase):
             result = test_var_one + test_var_two
             return result
         """)
+
+        missing_param_func_node.root().file = 'old_style_docstring.file'
         with self.checker_test_object.assertAddsMessages(
             testutils.Message(
                 msg_id='missing-param-doc',
@@ -1836,6 +1915,9 @@ class DocstringParameterCheckerTests(unittest.TestCase):
                 result = test_var_one + test_var_two
                 return result
         """)
+
+        class_node.root().file = 'old_style_docstring.file'
+        multiple_constructor_func_node.root().file = 'old_style_docstring.file'
         with self.checker_test_object.assertAddsMessages(
             testutils.Message(
                 msg_id='multiple-constructor-doc',
@@ -1864,6 +1946,220 @@ class DocstringParameterCheckerTests(unittest.TestCase):
             ),
         ):
             self.checker_test_object.checker.visit_raise(raise_node)
+
+    def test_missing_args_section_in_doctring(self):
+        node_with_no_error_message = astroid.extract_node(
+            u"""def func(arg): #@
+                    \"\"\"This is a docstring.\"\"\"
+                    Something
+        """)
+
+        missing_arg_doc = testutils.Message(
+            msg_id='missing-arg-doc',
+            node=node_with_no_error_message)
+        with self.checker_test_object.assertAddsMessages(
+            missing_arg_doc):
+            self.checker_test_object.checker.visit_functiondef(
+                node_with_no_error_message)
+
+    def test_correct_args_formatting_in_new_docstring_style(self):
+        incorrect_args_format_in_new_style = astroid.extract_node(
+            """
+        def func(test_var_one, test_var_two): #@
+            \"\"\"Function to test docstring parameters.
+
+            Args:
+                test_var_one: int. First test variable.
+                test_var_two: str. Second test variable.
+            \"\"\"
+            result = test_var_one + test_var_two
+        """)
+        malformed_args_section = testutils.Message(
+            msg_id='malformed-args-section',
+            node=incorrect_args_format_in_new_style)
+        with self.checker_test_object.assertAddsMessages(
+            malformed_args_section,
+            malformed_args_section
+        ):
+            self.checker_test_object.checker.visit_functiondef(
+                incorrect_args_format_in_new_style)
+
+        correct_args_format_in_new_style = astroid.extract_node(
+            """
+        def func(test_var_one, test_var_two): #@
+            \"\"\"Function to test docstring parameters.
+
+            Args:
+                test_var_one: First test variable.
+                test_var_two: Second test variable.
+            \"\"\"
+            result = test_var_one + test_var_two
+        """)
+        with self.checker_test_object.assertNoMessages():
+            self.checker_test_object.checker.visit_functiondef(
+                correct_args_format_in_new_style)
+
+    def test_correct_returns_formatting_in_new_docstring_style(self):
+        invalid_return_documentation = astroid.extract_node(
+            """
+        def func(test_var_one, test_var_two): #@
+            \"\"\"Function to test docstring parameters.
+
+            Args:
+                test_var_one: First test variable.
+                test_var_two: Second test variable.
+
+            Returns:
+                int. The test result.
+            \"\"\"
+            result = test_var_one + test_var_two
+            return result
+        """)
+
+        malformed_returns_section = testutils.Message(
+            msg_id='malformed-returns-section',
+            node=invalid_return_documentation)
+        with self.checker_test_object.assertAddsMessages(
+            malformed_returns_section
+        ):
+            self.checker_test_object.checker.visit_functiondef(
+                invalid_return_documentation)
+
+        valid_return_documentation = astroid.extract_node(
+            """
+        def func(test_var_one, test_var_two): #@
+            \"\"\"Function to test docstring parameters.
+
+            Args:
+                test_var_one: First test variable.
+                test_var_two: Second test variable.
+
+            Returns:
+                The test result.
+            \"\"\"
+            result = test_var_one + test_var_two
+            return result
+        """)
+        with self.checker_test_object.assertNoMessages():
+            self.checker_test_object.checker.visit_functiondef(
+                valid_return_documentation)
+
+    def test_correct_yields_formatting_in_new_docstring_style(self):
+        valid_yields_documentation = astroid.extract_node(
+            """
+        def func(test_var_one, test_var_two): #@
+            \"\"\"Function to test docstring parameters.
+
+            Args:
+                test_var_one: First test variable.
+                test_var_two: Second test variable.
+
+            Yields:
+                The test result.
+            \"\"\"
+            result = test_var_one + test_var_two
+            yield result
+        """)
+        with self.checker_test_object.assertNoMessages():
+            self.checker_test_object.checker.visit_functiondef(
+                valid_yields_documentation)
+
+        invalid_yields_documentation = astroid.extract_node(
+            """
+        def func(test_var_one, test_var_two): #@
+            \"\"\"Function to test docstring parameters.
+
+            Args:
+                test_var_one: First test variable.
+                test_var_two: Second test variable.
+
+            Yields:
+                int. The test result.
+            \"\"\"
+            result = test_var_one + test_var_two
+            yield result
+        """)
+        malformed_yields_section = testutils.Message(
+            msg_id='malformed-yields-section',
+            node=invalid_yields_documentation)
+        with self.checker_test_object.assertAddsMessages(
+            malformed_yields_section
+        ):
+            self.checker_test_object.checker.visit_functiondef(
+                invalid_yields_documentation)
+
+    def test_correct_returns_indentation_in_new_docstring_style(self):
+        incorrect_returns_indentation_node = astroid.extract_node(
+            """
+        def func(test_var_one, test_var_two): #@
+            \"\"\"Function to test docstring parameters.
+
+            Args:
+                test_var_one: First test variable.
+                test_var_two: Second test variable.
+
+            Yields:
+                The test result and some
+                    extra description.
+            \"\"\"
+            result = test_var_one + test_var_two
+            yield result
+        """)
+
+        incorrect_returns_indentation = testutils.Message(
+            msg_id='4-space-indentation-in-docstring',
+            node=incorrect_returns_indentation_node)
+        with self.checker_test_object.assertAddsMessages(
+            incorrect_returns_indentation
+        ):
+            self.checker_test_object.checker.visit_functiondef(
+                incorrect_returns_indentation_node)
+
+    def test_missing_args_in_new_docstring_style(self):
+        missing_argument_node = astroid.extract_node(
+            """
+        def func(test_var_one, test_var_two): #@
+            \"\"\"Function to test docstring parameters.
+
+            Args:
+                test_var_one: First test variable.
+            \"\"\"
+            result = test_var_one + test_var_two
+        """)
+
+        missing_param_doc = testutils.Message(
+            msg_id='missing-param-doc',
+            node=missing_argument_node,
+            args=('test_var_two',))
+        with self.checker_test_object.assertAddsMessages(
+            missing_param_doc
+        ):
+            self.checker_test_object.checker.visit_functiondef(
+                missing_argument_node)
+
+    def test_correct_extra_args_in_new_docstring_style(self):
+        malformed_args_argument_node = astroid.extract_node(
+            """
+        def func(*args): #@
+            \"\"\"Function to test docstring parameters.
+
+            Args:
+                *args: list(*). First test variable.
+            \"\"\"
+            result = test_var_one + test_var_two
+        """)
+
+        malformed_args_argument = testutils.Message(
+            msg_id='malformed-args-argument',
+            node=malformed_args_argument_node,)
+        malformed_args_section = testutils.Message(
+            msg_id='malformed-args-section',
+            node=malformed_args_argument_node)
+        with self.checker_test_object.assertAddsMessages(
+            malformed_args_argument, malformed_args_section
+        ):
+            self.checker_test_object.checker.visit_functiondef(
+                malformed_args_argument_node)
 
 
 class ImportOnlyModulesCheckerTests(unittest.TestCase):

@@ -173,7 +173,7 @@ def docstringify(docstring):
         if instance.is_valid():
             return instance
 
-    return _check_docs_utils.Docstring(docstring)
+    return GoogleDocstring(docstring)
 
 
 class GoogleDocstring(_check_docs_utils.GoogleDocstring):
@@ -195,6 +195,13 @@ class GoogleDocstring(_check_docs_utils.GoogleDocstring):
         type=re_multiple_type,
     ), flags=re.X | re.S | re.M)
 
+    re_new_param_line = re.compile(
+        r"""
+        \s*  \*{0,2}(\w+)             # identifier potentially with asterisks
+        \s*  ([:])                    # optional type declaration
+        \s*  ([A-Z0-9](.*)[.\]}\)]+$)     # beginning of optional description
+    """, flags=re.X | re.S | re.M)
+
     re_returns_line = re.compile(
         r"""
         \s* (({type}|\S*).)?              # identifier
@@ -212,3 +219,27 @@ class GoogleDocstring(_check_docs_utils.GoogleDocstring):
     """.format(
         type=re_multiple_type,
     ), flags=re.X | re.S | re.M)
+
+    def match_new_param_docs(self):
+        """Returns the set parameter names which are properly documented
+
+        Returns:
+            set(str). A set of parameter names which are properly defined
+            in docstring.
+        """
+        params_with_doc = set()
+
+        entries = self._parse_section(self.re_param_section)
+        entries.extend(self._parse_section(self.re_keyword_param_section))
+        for entry in entries:
+            match = self.re_new_param_line.match(entry)
+            if not match:
+                continue
+
+            param_name = match.group(1)
+            param_desc = match.group(3)
+
+            if param_desc:
+                params_with_doc.add(param_name)
+
+        return params_with_doc
